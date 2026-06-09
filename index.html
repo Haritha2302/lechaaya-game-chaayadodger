@@ -54,7 +54,7 @@
         drinksCollected: 0,
         lives: 5,
         gameSpeed: 2,
-        spawnRate: 0.015,
+        spawnRate: 0.035,
         objectIdCounter: 0,
         dropsCount: 0,
       });
@@ -106,7 +106,7 @@
             return obj.y < GAME_HEIGHT;
           });
           data.objects = data.objects.filter((obj) => {
-            const colliding = obj.x + obj.width / 2 > data.playerX && obj.x + obj.width / 2 < data.playerX + PLAYER_SIZE && obj.y > PLAYER_Y - 10 && obj.y < PLAYER_Y + PLAYER_SIZE;
+            const colliding = obj.x + obj.width / 2 > data.playerX && obj.x + obj.width / 2 < data.playerX + PLAYER_SIZE && obj.y + obj.height / 2 > PLAYER_Y - 5 && obj.y + obj.height / 2 < PLAYER_Y + PLAYER_SIZE;
             if (colliding) {
               if (obj.type === 'drink') {
                 data.drinksCollected += 1;
@@ -139,7 +139,7 @@
       }, [gameState]);
 
       const handleStart = () => {
-        gameDataRef.current = { playerX: 130, objects: [], drinksCollected: 0, lives: 5, gameSpeed: 2, spawnRate: 0.015, objectIdCounter: 0, dropsCount: 0 };
+        gameDataRef.current = { playerX: 130, objects: [], drinksCollected: 0, lives: 5, gameSpeed: 2, spawnRate: 0.035, objectIdCounter: 0, dropsCount: 0 };
         setDrinksCollected(0);
         setLives(5);
         setGameState('playing');
@@ -152,6 +152,16 @@
           gameDataRef.current.playerX = Math.max(0, gameDataRef.current.playerX - step);
         } else {
           gameDataRef.current.playerX = Math.min(GAME_WIDTH - PLAYER_SIZE, gameDataRef.current.playerX + step);
+        }
+      };
+
+      const shareScore = () => {
+        const text = `I collected ${drinksCollected} chaaya in Chaaya Dodger! Can you beat my score? 🫖☕ chaayadodger.lechaaya.in`;
+        if (navigator.share) {
+          navigator.share({ title: 'Chaaya Dodger', text: text });
+        } else {
+          navigator.clipboard.writeText(text);
+          alert('Score copied! Paste it in your Instagram story.');
         }
       };
 
@@ -192,10 +202,13 @@
               </div>
             ))}
             {gameState === 'gameOver' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>Out of Lives!</div>
-                <div style={{ fontSize: '18px', marginBottom: '15px' }}>You collected <span style={{ color: 'var(--accent-pink)', fontWeight: 'bold' }}>{drinksCollected}</span> chaaya ☕</div>
-                <button onClick={handleStart} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Play Again</button>
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>Game Over!</div>
+                <div style={{ fontSize: '14px', marginBottom: '20px', opacity: 0.8 }}>Whoa, there's a new connoisseur in town! 🎉</div>
+                <div style={{ fontSize: '32px', marginBottom: '20px', color: 'var(--accent-pink)', fontWeight: 'bold' }}>{drinksCollected} ☕</div>
+                <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.7 }}>chaaya collected</div>
+                <button onClick={handleStart} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px' }}>Play Again</button>
+                <button onClick={() => shareScore()} style={{ padding: '10px 20px', background: 'var(--accent-blue)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Share Score</button>
               </div>
             )}
             {gameState === 'win' && (
