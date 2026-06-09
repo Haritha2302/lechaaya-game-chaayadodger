@@ -174,22 +174,24 @@
 
       const getEndMessage = () => {
         const messages = {
-          elite: ["You're a true Chai Champion! 🏆", "Legendary chaaya collector! ☕✨"],
+          elite: ["Thani Chaaya Aashaan! Kenkemam!", "Chaayakkuttaaa, namosthuthe!", "Pathu vayaraa, thani Raavanan"],
           high: [
-            "Impressive! You've got taste.",
-            "Getting there! One more round?",
-            "Chaaya connoisseur in the making!"
+            "Aahaha, that's how you drink chaaya!",
+            "Subaash Subaash! Onnukoode aayaalo?",
+            "Chaaya Aashaan in the making!",
+            "Ambada kemaa, chaayakkuttaa!"
           ],
           medium: [
-            "Not bad! Can you go higher?",
-            "Getting there! One more round?",
-            "Pretty decent collection!",
-            "You've got the chaaya spirit!"
+            "Tharakkedilla! Iniyum kudikkaan pattumo?",
+            "Shyo, just miss! Oru round koode nokkiyaalo?",
+            "Thaan aalu kollallo, theeppettikkolli!",
+            "Idakkidakk chaaya kudichillenkil pinne enthu jeevitham!",
+            "Nallonam Dinkane manassil dhyaanichu oru round koode kalikkatte?"
           ],
           low: [
-            "Oops, monsoons are tough! Try again.",
-            "The chaaya gods weren't kind today.",
-            "Better luck next time, friend!"
+            "Thalararuthu Ramankutty, thalararuthu.",
+            "Enthokke bahalamaayirunnu! Malappuram kathi, machine gun,...",
+            "Ellathinum athintethaaya samayamundu Dasa."
           ]
         };
         
@@ -205,8 +207,8 @@
       return (
         <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: "'Silkscreen', 'Press Start 2P', cursive" }}>
           <div style={{ color: 'var(--text-primary)', marginBottom: '20px', textAlign: 'center' }}>
-            <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>Fill Your Chaaya Glass</h1>
-            <p style={{ margin: '0', opacity: 1, fontSize: '16px', fontWeight: 'bold', letterSpacing: '2px' }}>Collect drinks <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABhElEQVR4AeyUsUoDQRCG5+ysU6RRsdTCQsRC0E5BfIMgNqIvINpa2FgoPoC9+AA2FnYKFiK2lqISyFMk+x+5yya3s/vv5Y6kSNifbHb+mflucndzMuHPDECbQNf8M1XLlCwuDUAe3z+G9P3fEVZZ7vnNnUDFtoMTFWBgEVlfXLJ/Bvcx/iBATDGbDHkb2zv2kXPvBUARZxZ5yOSrAEwyw3HSOvTaVIAs6+VyX8oqq+H71gCSlYWmL4+O9eskWoIGkPt3r55lbbmRKj8kNsgjbOIDKEwhFiR09QD0ASDuFECcgRKHpQDQpyqI0gCAqEJjAVQxhbEAJj4BH8DX368vnMemfgLpu6B5/JATj25c90Hj9F5aW5uwqm9ABKGpnwAga1UtE/h8e6WhawGguxsjBYBHqr13bezh9bN6FDZZDgYg6d/REoLImt9enKFF8AmAiQGAbwjiaf5AbKExBGNMc/hZAHhTCEwDTTQZI3XlxpeuGAAkoHhI8NGKBaALs8baAUIgPQAAAP//Zw2f5gAAAAZJREFUAwBUAo9BTEnSdwAAAABJRU5ErkJgggAA" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /> • Avoid snacks <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACTUlEQVR4AeyVsU4cMRCGZyOFInVSQApqoEiTKHmI1GnS5A0ipcwDpIzgDahBdEi8AgjoEFdTAAWUiAKKZb4Rcxobr3cPFtFw8n9j/x7P/9vevXsjL/x5NTD2CbR6ow7t9rcxDbTt7Z44VBojGuptLAMmfnZ2IY7Tk22Ue02MZQCxBzjYXYermhjVwMLCBwRnwlgGmubt16Jw3ymMZaAoPj//vshH8lkNRKGu/mMM8FBFdNUexM9iwET9PfeoKsZrfFQbasDec0RzlRJHzvn5pQD6NQwxYOIU4UkvgTlweDgxUYQ/f/slDuYUnJSGtPUZSMR1aZNBNv4vGZS35qKcTA5NeGCiz4CuEWHXIoK4hI8VW16aEwCPOBH4T7JHOAxptHUardUMTHdvmYWv9uSLrCzPJTN+Ih8XvwvwSYx4P8aaAcvr2j3ilqBfbuJo55OdBieCEZ1KTDDOUTUwRJyCzeK+IE4fHE9uCEXk11AzwJ0DL8TdtXHnTOTicODHnwkhrre/asiI3ICJxATtG4cw0PG0lcRLu+dZ4NWcLgydaKD9/e+dAJ03USKiQPtJq4lnu09OISmig2hAhyKrP1cEQYeR4QthEO+cad95Js5Ugvy5igaatb/XQvHNrStxMI5AGMSqQ8VL1xANUJPjatgFgOB1AogCOAfCgPF9PusZDkZuwBdSKDGCUA5PHip+/0tJbV8qXQY8gWQz4oRHRB3Kkaehu5XEye4zQA4wEy5IVBJRhw6rrTNvqAGqexGPcE/GLAaeLFYq8OwGSqKRuwMAAP//MARDjQAAAAZJREFUAwCD5yVQZrs1jQAAAABJRU5ErkJggg==" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /></p>
+            <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>Help Thangappan</h1>
+            <p style={{ margin: '0', opacity: 1, fontSize: '14px', fontWeight: 'bold', letterSpacing: '1.5px' }}>Collect chaaya <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABhElEQVR4AeyUsUoDQRCG5+ysU6RRsdTCQsRC0E5BfIMgNqIvINpa2FgoPoC9+AA2FnYKFiK2lqISyFMk+x+5yya3s/vv5Y6kSNifbHb+mflucndzMuHPDECbQNf8M1XLlCwuDUAe3z+G9P3fEVZZ7vnNnUDFtoMTFWBgEVlfXLJ/Bvcx/iBATDGbDHkb2zv2kXPvBUARZxZ5yOSrAEwyw3HSOvTaVIAs6+VyX8oqq+H71gCSlYWmL4+O9eskWoIGkPt3r55lbbmRKj8kNsgjbOIDKEwhFiR09QD0ASDuFECcgRKHpQDQpyqI0gCAqEJjAVQxhbEAJj4BH8DX368vnMemfgLpu6B5/JATj25c90Hj9F5aW5uwqm9ABKGpnwAga1UtE/h8e6WhawGguxsjBYBHqr13bezh9bN6FDZZDgYg6d/REoLImt9enKFF8AmAiQGAbwjiaf5AbKExBGNMc/hZAHhTCEwDTTQZI3XlxpeuGAAkoHhI8NGKBaALs8baAUIgPQAAAP//Zw2f5gAAAAZJREFUAwBUAo9BTEnSdwAAAABJRU5ErkJgggAA" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /> • Avoid bananas <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACTUlEQVR4AeyVsU4cMRCGZyOFInVSQApqoEiTKHmI1GnS5A0ipcwDpIzgDahBdEi8AgjoEFdTAAWUiAKKZb4Rcxobr3cPFtFw8n9j/x7P/9vevXsjL/x5NTD2CbR6ow7t9rcxDbTt7Z44VBojGuptLAMmfnZ2IY7Tk22Ue02MZQCxBzjYXYermhjVwMLCBwRnwlgGmubt16Jw3ymMZaAoPj//vshH8lkNRKGu/mMM8FBFdNUexM9iwET9PfeoKsZrfFQbasDec0RzlRJHzvn5pQD6NQwxYOIU4UkvgTlweDgxUYQ/f/slDuYUnJSGtPUZSMR1aZNBNv4vGZS35qKcTA5NeGCiz4CuEWHXIoK4hI8VW16aEwCPOBH4T7JHOAxptHUardUMTHdvmYWv9uSLrCzPJTN+Ih8XvwvwSYx4P8aaAcvr2j3ilqBfbuJo55OdBieCEZ1KTDDOUTUwRJyCzeK+IE4fHE9uCEXk11AzwJ0DL8TdtXHnTOTicODHnwkhrre/asiI3ICJxATtG4cw0PG0lcRLu+dZ4NWcLgydaKD9/e+dAJ03USKiQPtJq4lnu09OISmig2hAhyKrP1cEQYeR4QthEO+cad95Js5Ugvy5igaatb/XQvHNrStxMI5AGMSqQ8VL1xANUJPjatgFgOB1AogCOAfCgPF9PusZDkZuwBdSKDGCUA5PHip+/0tJbV8qXQY8gWQz4oRHRB3Kkaehu5XEye4zQA4wEy5IVBJRhw6rrTNvqAGqexGPcE/GLAaeLFYq8OwGSqKRuwMAAP//MARDjQAAAAZJREFUAwCD5yVQZrs1jQAAAABJRU5ErkJggg==" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /></p>
           </div>
           <div style={{ width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, background: 'var(--game-bg)', border: '3px solid var(--border)', position: 'relative', overflow: 'hidden', marginBottom: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
             <div style={{ position: 'absolute', right: '8px', top: '10px', display: 'flex', gap: '4px', zIndex: 10 }}>
@@ -253,7 +255,7 @@
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACl0lEQVR4AcSSMY4VMQyGbSQaKiQkJEqQoOEKgDgFcIWFgp4D0FMAZ1i4BAJOARINHYKWZlea9eeM32QyyUze01vtU/6x49i///jlmlzxr1fAYDoPhZW2V48AGsswmLn1S55/OtvLt9ZWaN/GagmgyOGNrVhVZfh7V06fXZcXn89F/t1b+KpTjmryrZQFF3aBmgBPjsY0c99ur6pOgIiYxOnJ72kqdqqacsTyd7UWb61SgDfPi2kGETdGSCDiPhUToWo3tr8pzslHnOooqKGgFJBuk4/aCmkGsaqKqlpE/B0QV7W9/R2cc6CqnuN7i1tMR5hZroWAUA0BDawEAjOVdfJIJFA57gktBDA6Cn3sOBkQBbLQwuUcLA4agVKA3xaC4vZqvxmFvny8vlen8s8ssdiUAvy4cvuBUdM04InFJ86w5NtxetTmtFZNgBa39+ZO8PG7m81P5PE+7L2u5dcEkF8fHYSQb4E8WDrQEpCXqtAwIpBvIXJTXf0yY06PAFKTCAgBkRY4D4isNhf79Qqw1JGM27NrYTrfbA5FrwBe8/QYqRwxfPg2eplJIlJNFq65PQKqjSGL5mGJzTAJmYXzzZqA+Q0SmeweJP9zzhT7sJGfcuBKXvFdEyCvnjxweFOIDcTYY1VVVBOe3r/t4sKSA3yfmlZFtATMkmkWgAs/LH40yS0+IC8sfomaAG8OcZl8hL1z5zw1AWnsedbov//6Q8C43ZmHd27u/JbTmkJVACQ0AvgA//XbG7hHRVMAXWhIY/wt9EyhxtEUwBt49+a/hAgse+I1ImKHiGgKgDDQ0zxy9xWxKoDbcusgvwy7KuDQhvtMoSqAhxdAREwhYj32y88/UgKuEjUBakmXCaOfVk3AdHoEb4viAgAA///DSnicAAAABklEQVQDAHVCcFDdyUpsAAAAAElFTkSuQmCC" style={{ width: '120px', height: '120px', marginBottom: '20px' }} />
                 <div style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '15px' }}>Thavala Thangappan</div>
                 <div style={{ fontSize: '11px', lineHeight: '1.6', marginBottom: '20px', maxWidth: '280px', opacity: 0.9 }}>
-                  Not a typical frog. Thavala loves chaaya (can't blame them) and absolutely hates bananas (can they be blamed?). But the monsoons have arrived, and chaaya is scarce. Help them collect every drop, and they'll owe you forever.
+                  Thangappan is not a typical frog. They love chaaya (can't blame them) and absolutely hates bananas (can they be blamed?). But the monsoons have arrived, and chaaya is scarce. Help Thangappan collect every drop, and they'll owe you forever.
                 </div>
                 <button onClick={() => { setGameState('start'); }} style={{ padding: '12px 24px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Help Thavala Thangappan</button>
               </div>
@@ -264,7 +266,6 @@
                 <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>
                   Collect drinks <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABhElEQVR4AeyUsUoDQRCG5+ysU6RRsdTCQsRC0E5BfIMgNqIvINpa2FgoPoC9+AA2FnYKFiK2lqISyFMk+x+5yya3s/vv5Y6kSNifbHb+mflucndzMuHPDECbQNf8M1XLlCwuDUAe3z+G9P3fEVZZ7vnNnUDFtoMTFWBgEVlfXLJ/Bvcx/iBATDGbDHkb2zv2kXPvBUARZxZ5yOSrAEwyw3HSOvTaVIAs6+VyX8oqq+H71gCSlYWmL4+O9eskWoIGkPt3r55lbbmRKj8kNsgjbOIDKEwhFiR09QD0ASDuFECcgRKHpQDQpyqI0gCAqEJjAVQxhbEAJj4BH8DX368vnMemfgLpu6B5/JATj25c90Hj9F5aW5uwqm9ABKGpnwAga1UtE/h8e6WhawGguxsjBYBHqr13bezh9bN6FDZZDgYg6d/REoLImt9enKFF8AmAiQGAbwjiaf5AbKExBGNMc/hZAHhTCEwDTTQZI3XlxpeuGAAkoHhI8NGKBaALs8baAUIgPQAAAP//Zw2f5gAAAAZJREFUAwBUAo9BTEnSdwAAAABJRU5ErkJgggAA" style={{ width: '20px', height: '20px', marginBottom: '-4px', filter: 'drop-shadow(0 0 2px rgba(255,179,217,0.6))' }} /><br />
                   Avoid snacks <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACTUlEQVR4AeyVsU4cMRCGZyOFInVSQApqoEiTKHmI1GnS5A0ipcwDpIzgDahBdEi8AgjoEFdTAAWUiAKKZb4Rcxobr3cPFtFw8n9j/x7P/9vevXsjL/x5NTD2CbR6ow7t9rcxDbTt7Z44VBojGuptLAMmfnZ2IY7Tk22Ue02MZQCxBzjYXYermhjVwMLCBwRnwlgGmubt16Jw3ymMZaAoPj//vshH8lkNRKGu/mMM8FBFdNUexM9iwET9PfeoKsZrfFQbasDec0RzlRJHzvn5pQD6NQwxYOIU4UkvgTlweDgxUYQ/f/slDuYUnJSGtPUZSMR1aZNBNv4vGZS35qKcTA5NeGCiz4CuEWHXIoK4hI8VW16aEwCPOBH4T7JHOAxptHUardUMTHdvmYWv9uSLrCzPJTN+Ih8XvwvwSYx4P8aaAcvr2j3ilqBfbuJo55OdBieCEZ1KTDDOUTUwRJyCzeK+IE4fHE9uCEXk11AzwJ0DL8TdtXHnTOTicODHnwkhrre/asiI3ICJxATtG4cw0PG0lcRLu+dZ4NWcLgydaKD9/e+dAJ03USKiQPtJq4lnu09OISmig2hAhyKrP1cEQYeR4QthEO+cad95Js5Ugvy5igaatb/XQvHNrStxMI5AGMSqQ8VL1xANUJPjatgFgOB1AogCOAfCgPF9PusZDkZuwBdSKDGCUA5PHip+/0tJbV8qXQY8gWQz4oRHRB3Kkaehu5XEye4zQA4wEy5IVBJRhw6rrTNvqAGqexGPcE/GLAaeLFYq8OwGSqKRuwMAAP//MARDjQAAAAZJREFUAwCD5yVQZrs1jQAAAABJRU5ErkJggg==" style={{ width: '20px', height: '20px', marginBottom: '-4px', filter: 'drop-shadow(0 0 2px rgba(255,179,217,0.6))' }} /><br />
-                  Fill the glass to win!
                 </div>
                 <button onClick={handleStart} style={{ padding: '12px 24px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Start Game</button>
               </div>
@@ -277,7 +278,7 @@
               <button onClick={() => handleButtonMove('right')} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', flex: 1 }}>Right →</button>
             </div>
           </div>
-          <div style={{ color: 'var(--text-primary)', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya ☕ <br />Fill your glass. Chaaya Champion vibes.</div>
+          <div style={{ color: 'var(--text-primary)', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya <br />Collect chaaya to become the aasthana Chaaya Aashaan.</div>
         </div>
       );
     }
