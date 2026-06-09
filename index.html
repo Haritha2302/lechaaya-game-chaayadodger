@@ -44,6 +44,12 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
+    const getModalBg = () => {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches 
+        ? 'rgba(0, 0, 0, 0.95)' 
+        : 'rgba(26, 26, 46, 0.85)'; // Dark color for contrast in light mode
+    };
+
     function TeaGame() {
       const [gameState, setGameState] = useState('intro');
       const [drinksCollected, setDrinksCollected] = useState(0);
@@ -226,18 +232,16 @@
               </div>
             ))}
             {gameState === 'gameOver' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
+              <div style={{ position: 'absolute', inset: 0, background: getModalBg(), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
                 <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>Game Over!</div>
                 <div style={{ fontSize: '14px', marginBottom: '20px', opacity: 0.8 }}>{getEndMessage()}</div>
                 <div style={{ fontSize: '32px', marginBottom: '20px', color: 'var(--accent-pink)', fontWeight: 'bold' }}>{drinksCollected} ☕</div>
                 <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.7 }}>chaaya collected</div>
                 <button onClick={handleStart} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px' }}>Play Again</button>
-                <button onClick={shareScore} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px' }}>Copy to Clipboard</button>
-                <button onClick={() => window.open('https://instagram.com', '_blank')} style={{ padding: '10px 20px', background: 'var(--accent-blue)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Open Instagram</button>
               </div>
             )}
             {gameState === 'win' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
+              <div style={{ position: 'absolute', inset: 0, background: getModalBg(), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
                 <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Glass Full! 🎉</div>
                 <div style={{ fontSize: '14px', marginBottom: '10px' }}>You collected {drinksCollected} chaaya ☕</div>
                 <div style={{ fontSize: '12px', marginBottom: '15px', opacity: 0.8 }}>Chai Champion Status</div>
@@ -245,7 +249,7 @@
               </div>
             )}
             {gameState === 'intro' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center', padding: '20px', overflowY: 'auto' }}>
+              <div style={{ position: 'absolute', inset: 0, background: getModalBg(), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center', padding: '20px', overflowY: 'auto' }}>
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACl0lEQVR4AcSSMY4VMQyGbSQaKiQkJEqQoOEKgDgFcIWFgp4D0FMAZ1i4BAJOARINHYKWZlea9eeM32QyyUze01vtU/6x49i///jlmlzxr1fAYDoPhZW2V48AGsswmLn1S55/OtvLt9ZWaN/GagmgyOGNrVhVZfh7V06fXZcXn89F/t1b+KpTjmryrZQFF3aBmgBPjsY0c99ur6pOgIiYxOnJ72kqdqqacsTyd7UWb61SgDfPi2kGETdGSCDiPhUToWo3tr8pzslHnOooqKGgFJBuk4/aCmkGsaqKqlpE/B0QV7W9/R2cc6CqnuN7i1tMR5hZroWAUA0BDawEAjOVdfJIJFA57gktBDA6Cn3sOBkQBbLQwuUcLA4agVKA3xaC4vZqvxmFvny8vlen8s8ssdiUAvy4cvuBUdM04InFJ86w5NtxetTmtFZNgBa39+ZO8PG7m81P5PE+7L2u5dcEkF8fHYSQb4E8WDrQEpCXqtAwIpBvIXJTXf0yY06PAFKTCAgBkRY4D4isNhf79Qqw1JGM27NrYTrfbA5FrwBe8/QYqRwxfPg2eplJIlJNFq65PQKqjSGL5mGJzTAJmYXzzZqA+Q0SmeweJP9zzhT7sJGfcuBKXvFdEyCvnjxweFOIDcTYY1VVVBOe3r/t4sKSA3yfmlZFtATMkmkWgAs/LH40yS0+IC8sfomaAG8OcZl8hL1z5zw1AWnsedbov//6Q8C43ZmHd27u/JbTmkJVACQ0AvgA//XbG7hHRVMAXWhIY/wt9EyhxtEUwBt49+a/hAgse+I1ImKHiGgKgDDQ0zxy9xWxKoDbcusgvwy7KuDQhvtMoSqAhxdAREwhYj32y88/UgKuEjUBakmXCaOfVk3AdHoEb4viAgAA///DSnicAAAABklEQVQDAHVCcFDdyUpsAAAAAElFTkSuQmCC" style={{ width: '120px', height: '120px', marginBottom: '20px' }} />
                 <div style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '15px' }}>Thavala Thangappan</div>
                 <div style={{ fontSize: '11px', lineHeight: '1.6', marginBottom: '20px', maxWidth: '280px', opacity: 0.9 }}>
@@ -255,7 +259,7 @@
               </div>
             )}
             {gameState === 'start' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
+              <div style={{ position: 'absolute', inset: 0, background: getModalBg(), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
                 <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>Chaaya Dodger</div>
                 <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>
                   Collect drinks <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABhElEQVR4AeyUsUoDQRCG5+ysU6RRsdTCQsRC0E5BfIMgNqIvINpa2FgoPoC9+AA2FnYKFiK2lqISyFMk+x+5yya3s/vv5Y6kSNifbHb+mflucndzMuHPDECbQNf8M1XLlCwuDUAe3z+G9P3fEVZZ7vnNnUDFtoMTFWBgEVlfXLJ/Bvcx/iBATDGbDHkb2zv2kXPvBUARZxZ5yOSrAEwyw3HSOvTaVIAs6+VyX8oqq+H71gCSlYWmL4+O9eskWoIGkPt3r55lbbmRKj8kNsgjbOIDKEwhFiR09QD0ASDuFECcgRKHpQDQpyqI0gCAqEJjAVQxhbEAJj4BH8DX368vnMemfgLpu6B5/JATj25c90Hj9F5aW5uwqm9ABKGpnwAga1UtE/h8e6WhawGguxsjBYBHqr13bezh9bN6FDZZDgYg6d/REoLImt9enKFF8AmAiQGAbwjiaf5AbKExBGNMc/hZAHhTCEwDTTQZI3XlxpeuGAAkoHhI8NGKBaALs8baAUIgPQAAAP//Zw2f5gAAAAZJREFUAwBUAo9BTEnSdwAAAABJRU5ErkJgggAA" style={{ width: '20px', height: '20px', marginBottom: '-4px', filter: 'drop-shadow(0 0 2px rgba(255,179,217,0.6))' }} /><br />
