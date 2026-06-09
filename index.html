@@ -45,10 +45,7 @@
     const { useState, useEffect, useRef } = React;
 
     function TeaGame() {
-      const [firstLoadShown, setFirstLoadShown] = useState(() => {
-        try { return JSON.parse(localStorage.getItem('chaayadodger_intro_shown')) || false; } catch { return false; }
-      });
-      const [gameState, setGameState] = useState(firstLoadShown ? 'start' : 'intro');
+      const [gameState, setGameState] = useState('intro');
       const [drinksCollected, setDrinksCollected] = useState(0);
       const [lives, setLives] = useState(5);
       const gameRef = useRef(null);
@@ -91,7 +88,7 @@
           if (Math.random() < data.spawnRate) {
             data.dropsCount += 1;
             let type;
-            if (data.dropsCount % 100 === 0) {
+            if (data.dropsCount % 30 === 0) {
               type = 'life';
             } else {
               type = Math.random() > 0.4 ? 'drink' : 'snack';
@@ -103,10 +100,11 @@
               width: 25,
               height: 25,
               type,
+              speed: type === 'life' ? 0.8 : 1,
             });
           }
           data.objects = data.objects.filter((obj) => {
-            obj.y += data.gameSpeed;
+            obj.y += data.gameSpeed * (obj.speed || 1);
             return obj.y < GAME_HEIGHT;
           });
           data.objects = data.objects.filter((obj) => {
@@ -121,8 +119,8 @@
               }
               
               if (data.drinksCollected % 5 === 0) {
-                data.gameSpeed += 0.3;
-                data.spawnRate = Math.min(0.035, data.spawnRate + 0.002);
+                data.gameSpeed += 0.5;
+                data.spawnRate = Math.min(0.08, data.spawnRate + 0.003);
               }
               
               if (data.lives <= 0) {
@@ -161,19 +159,48 @@
 
       const shareScore = () => {
         const text = `I collected ${drinksCollected} chaaya in Chaaya Dodger! Can you beat my score? 🫖☕ chaayadodger.lechaaya.in`;
-        if (navigator.share) {
-          navigator.share({ title: 'Chaaya Dodger', text: text });
-        } else {
-          navigator.clipboard.writeText(text);
-          alert('Score copied! Paste it in your Instagram story.');
-        }
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Score copied! Go to your Instagram story and paste it. 📱');
+        }).catch(() => {
+          alert('Copy failed. Try manually: ' + text);
+        });
+      };
+
+      const getEndMessage = () => {
+        const messages = {
+          elite: ['You're a true Chai Champion! 🏆', 'Legendary chaaya collector! ☕✨'],
+          high: [
+            'Impressive! You've got taste.',
+            'That's a solid glass of chaaya right there.',
+            'Chaaya connoisseur in the making!'
+          ],
+          medium: [
+            'Not bad! Can you go higher?',
+            'Getting there! One more round?',
+            'Pretty decent collection!',
+            'You've got the chaaya spirit!'
+          ],
+          low: [
+            'Oops, monsoons are tough! Try again.',
+            'The chaaya gods weren't kind today.',
+            'Better luck next time, friend!'
+          ]
+        };
+        
+        let bracket = 'low';
+        if (drinksCollected >= 50) bracket = 'elite';
+        else if (drinksCollected >= 20) bracket = 'high';
+        else if (drinksCollected >= 10) bracket = 'medium';
+        
+        const options = messages[bracket];
+        return options[Math.floor(Math.random() * options.length)];
       };
 
       return (
         <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: "'Courier New', monospace" }}>
           <div style={{ color: 'var(--text-primary)', marginBottom: '20px', textAlign: 'center' }}>
             <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>Fill Your Chaaya Glass</h1>
-            <p style={{ margin: '0', opacity: 0.7 }}>Collect drinks ☕ • Avoid snacks 🍪</p>
+            <p style={{ margin: '0', opacity: 0.7 }}>Collect drinks <img src="data:image/png;base64,YOUR_DRINK_BASE64" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /> • Avoid snacks <img src="data:image/png;base64,YOUR_SNACK_BASE64" style={{width: '14px', height: '14px', marginBottom: '-2px'}} /></p>
           </div>
           <div style={{ width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, background: 'var(--game-bg)', border: '3px solid var(--border)', position: 'relative', overflow: 'hidden', marginBottom: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
             <div style={{ position: 'absolute', right: '8px', top: '10px', display: 'flex', gap: '4px', zIndex: 10 }}>
@@ -201,11 +228,12 @@
             {gameState === 'gameOver' && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
                 <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>Game Over!</div>
-                <div style={{ fontSize: '14px', marginBottom: '20px', opacity: 0.8 }}>Whoa, there's a new connoisseur in town! 🎉</div>
+                <div style={{ fontSize: '14px', marginBottom: '20px', opacity: 0.8 }}>{getEndMessage()}</div>
                 <div style={{ fontSize: '32px', marginBottom: '20px', color: 'var(--accent-pink)', fontWeight: 'bold' }}>{drinksCollected} ☕</div>
                 <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.7 }}>chaaya collected</div>
                 <button onClick={handleStart} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px' }}>Play Again</button>
-                <button onClick={() => shareScore()} style={{ padding: '10px 20px', background: 'var(--accent-blue)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Share Score</button>
+                <button onClick={shareScore} style={{...}}>Copy to Clipboard</button>
+                <button onClick={() => window.open('https://instagram.com', '_blank')} style={{...}}>Open Instagram</button>
               </div>
             )}
             {gameState === 'win' && (
@@ -223,22 +251,22 @@
                 <div style={{ fontSize: '11px', lineHeight: '1.6', marginBottom: '20px', maxWidth: '280px', opacity: 0.9 }}>
                   Not a typical frog. Thavala loves chaaya (can't blame them) and absolutely hates bananas (can they be blamed?). But the monsoons have arrived, and chaaya is scarce. Help them collect every drop, and they'll owe you forever.
                 </div>
-                <button onClick={() => { setFirstLoadShown(true); try { localStorage.setItem('chaayadodger_intro_shown', 'true'); } catch {} setGameState('start'); }} style={{ padding: '12px 24px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Help Thavala</button>
+                <button onClick={() => { setFirstLoadShown(true); setGameState('start'); }} style={{ padding: '12px 24px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>Help Thavala Thangappan</button>
               </div>
             )}
             {gameState === 'start' && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: 'var(--text-primary)', textAlign: 'center' }}>
                 <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>Chaaya Dodger</div>
-                <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>Collect drinks ☕<br />Avoid snacks 🍪<br />Fill the glass to win!</div>
+                <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>Collect drinks <img src="data:image/png;base64,YOUR_DRINK_BASE64" style={{width: '16px', height: '16px', marginBottom: '-2px'}} /><br />Avoid snacks <img src="data:image/png;base64,YOUR_SNACK_BASE64" style={{width: '16px', height: '16px', marginBottom: '-2px'}} /><br />Fill the glass to win!</div>
                 <button onClick={handleStart} style={{ padding: '12px 24px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Start Game</button>
               </div>
             )}
           </div>
           <div style={{ textAlign: 'center', color: 'var(--text-primary)', marginBottom: '20px' }}>
             <p style={{ margin: '0 0 10px 0', fontSize: '12px', opacity: 0.8 }}>Use arrow keys or buttons to move</p>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-              <button onClick={() => handleButtonMove('left')} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>← Left</button>
-              <button onClick={() => handleButtonMove('right')} style={{ padding: '10px 20px', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Right →</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'center', width: '100%', maxWidth: '300px' }}>
+              <button onClick={() => handleButtonMove('left')} style={{ padding: '12px 20px', width: '100%', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>← Left</button>
+              <button onClick={() => handleButtonMove('right')} style={{ padding: '12px 20px', width: '100%', background: 'var(--accent-pink)', color: 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Right →</button>
             </div>
           </div>
           <div style={{ color: 'var(--text-primary)', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya ☕ <br />Fill your glass. Chaaya Champion vibes.</div>
