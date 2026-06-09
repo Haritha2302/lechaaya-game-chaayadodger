@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Chaaya - Fill Your Glass</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    export default function TeaGame() {
+      const [gameState, setGameState] = useState('start');
+      const [score, setScore] = useState(0);
+      const [glassFullness, setGlassFullness] = useState(0);
+      const gameRef = useRef(null);
+      const gameDataRef = useRef({
+        playerX: 150,
+        objects: [],
+        score: 0,
+        glassFullness: 0,
+        gameSpeed: 2,
+        spawnRate: 0.015,
+        objectIdCounter: 0,
+      });
+
+      const GAME_WIDTH = 300;
+      const GAME_HEIGHT = 400;
+      const PLAYER_SIZE = 40;
+      const PLAYER_Y = GAME_HEIGHT - 50;
+
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (gameState !== 'playing') return;
+          if (e.key === 'ArrowLeft') {
+            gameDataRef.current.playerX = Math.max(0, gameDataRef.current.playerX - 20);
+          } else if (e.key === 'ArrowRight') {
+            gameDataRef.current.playerX = Math.min(GAME_WIDTH - PLAYER_SIZE, gameDataRef.current.playerX + 20);
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [gameState]);
+
+      useEffect(() => {
+        if (gameState !== 'playing') return;
+        let animationId;
+        const gameLoop = () => {
+          const data = gameDataRef.current;
+          if (Math.random() < data.spawnRate) {
+            const isCollectible = Math.random() > 0.4;
+            data.objects.push({
+              id: data.objectIdCounter++,
+              x: Math.random() * (GAME_WIDTH - 25),
+              y: -25,
+              width: 25,
+              height: 25,
+              isCollectible,
+            });
+          }
+          data.objects = data.objects.filter((obj) => {
+            obj.y += data.gameSpeed;
+            return obj.y < GAME_HEIGHT;
+          });
+          data.objects = data.objects.filter((obj) => {
+            const colliding = obj.x < data.playerX + PLAYER_SIZE && obj.x + obj.width > data.playerX && obj.y < PLAYER_Y + PLAYER_SIZE && obj.y + obj.height > PLAYER_Y;
+            if (colliding) {
+              if (obj.isCollectible) {
+                data.score += 1;
+                data.glassFullness = Math.min(10, data.glassFullness + 1);
+              } else {
+                data.glassFullness = Math.max(0, data.glassFullness - 1);
+              }
+              if (data.score % 5 === 0) {
+                data.gameSpeed += 0.3;
+                data.spawnRate = Math.min(0.035, data.spawnRate + 0.002);
+              }
+              if (data.glassFullness >= 10) {
+                setGameState('win');
+                return false;
+              }
+              if (data.glassFullness <= -3) {
+                setGameState('gameOver');
+                return false;
+              }
+              return false;
+            }
+            return true;
+          });
+          setScore(data.score);
+          setGlassFullness(data.glassFullness);
+          animationId = requestAnimationFrame(gameLoop);
+        };
+        animationId = requestAnimationFrame(gameLoop);
+        return () => cancelAnimationFrame(animationId);
+      }, [gameState]);
+
+      const handleStart = () => {
+        gameDataRef.current = { playerX: 130, objects: [], score: 0, glassFullness: 0, gameSpeed: 2, spawnRate: 0.015, objectIdCounter: 0 };
+        setScore(0);
+        setGlassFullness(0);
+        setGameState('playing');
+      };
+
+      const handleButtonMove = (direction) => {
+        if (gameState !== 'playing') return;
+        const step = 25;
+        if (direction === 'left') {
+          gameDataRef.current.playerX = Math.max(0, gameDataRef.current.playerX - step);
+        } else {
+          gameDataRef.current.playerX = Math.min(GAME_WIDTH - PLAYER_SIZE, gameDataRef.current.playerX + step);
+        }
+      };
+
+      return (
+        <div style={{ background: '#1B4D3E', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+          <div style={{ color: '#E8C89F', marginBottom: '20px', textAlign: 'center' }}>
+            <h1 style={{ margin: '0 0 10px 0' }}>Fill Your Tea Glass</h1>
+            <p style={{ margin: '0', opacity: 0.8 }}>Collect drinks 🫖 • Avoid snacks 🍪</p>
+          </div>
+          <div style={{ width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, background: '#0F2E28', border: '3px solid #D4A574', position: 'relative', overflow: 'hidden', marginBottom: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.5)' }}>
+            <div style={{ position: 'absolute', right: '8px', top: '10px', width: '20px', height: '150px', background: '#2A5E52', border: '2px solid #D4A574', zIndex: 10 }}>
+              <div style={{ position: 'absolute', bottom: '0', width: '100%', height: `${(glassFullness / 10) * 150}px`, background: '#E8C89F', transition: 'height 0.1s' }} />
+            </div>
+            <div style={{ position: 'absolute', top: '10px', left: '10px', color: '#E8C89F', fontSize: '14px', fontWeight: 'bold', zIndex: 10 }}>Drinks: {score}</div>
+            <div style={{ position: 'absolute', left: `${gameDataRef.current.playerX}px`, top: `${PLAYER_Y}px`, width: `${PLAYER_SIZE}px`, height: `${PLAYER_SIZE}px`, zIndex: 100 }}>
+              <svg viewBox="0 0 40 40" style={{ width: '100%', height: '100%' }}>
+                <path d="M 10 5 L 12 35 Q 12 38 15 38 L 25 38 Q 28 38 28 35 L 30 5 Z" stroke="#E8C89F" strokeWidth="2" fill="none" />
+                <path d={`M 12 ${35 - (glassFullness / 10) * 28} Q 12 ${38 - (glassFullness / 10) * 3} 15 ${38 - (glassFullness / 10) * 3} L 25 ${38 - (glassFullness / 10) * 3} Q 28 ${38 - (glassFullness / 10) * 3} 28 ${35 - (glassFullness / 10) * 28} Z`} fill="#D4A574" opacity="0.7" />
+              </svg>
+            </div>
+            {gameDataRef.current.objects.map((obj) => (
+              <div key={obj.id} style={{ position: 'absolute', left: `${obj.x}px`, top: `${obj.y}px`, width: `${obj.width}px`, height: `${obj.height}px` }}>
+                {obj.isCollectible ? (
+                  <svg viewBox="0 0 25 25" style={{ width: '100%', height: '100%' }}>
+                    <circle cx="12.5" cy="12.5" r="10" fill="#E8C89F" />
+                    <path d="M 8 7 L 10 15 Q 10 17 12.5 17 Q 15 17 15 15 L 17 7 Z" stroke="#1B4D3E" strokeWidth="1.5" fill="none" />
+                  </svg>
+                ) : (
+                  <div style={{ background: '#8B6F47', width: '100%', height: '100%', border: '2px solid #6B5136', position: 'relative' }}>
+                    <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#D4A574', top: '4px', left: '4px' }} />
+                    <div style={{ position: 'absolute', width: '6px', height: '6px', background: '#C0956F', top: '6px', right: '6px' }} />
+                  </div>
+                )}
+              </div>
+            ))}
+            {gameState === 'gameOver' && (
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: '#E8C89F', textAlign: 'center' }}>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>Glass Empty!</div>
+                <div style={{ fontSize: '14px', marginBottom: '15px' }}>You collected {score} drinks</div>
+                <button onClick={handleStart} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Try Again</button>
+              </div>
+            )}
+            {gameState === 'win' && (
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: '#E8C89F', textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Glass Full! 🎉</div>
+                <div style={{ fontSize: '14px', marginBottom: '10px' }}>You collected {score} drinks</div>
+                <div style={{ fontSize: '12px', marginBottom: '15px', opacity: 0.8 }}>Chai Champion Status</div>
+                <button onClick={handleStart} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Play Again</button>
+              </div>
+            )}
+            {gameState === 'start' && (
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: '#E8C89F', textAlign: 'center' }}>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>Fill Your Tea Glass</div>
+                <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>Collect drinks 🫖<br />Avoid snacks 🍪<br />Fill the glass to win!</div>
+                <button onClick={handleStart} style={{ padding: '12px 24px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Start Game</button>
+              </div>
+            )}
+          </div>
+          <div style={{ textAlign: 'center', color: '#E8C89F', marginBottom: '20px' }}>
+            <p style={{ margin: '0 0 10px 0', fontSize: '12px', opacity: 0.8 }}>Use arrow keys or buttons to move</p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <button onClick={() => handleButtonMove('left')} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>← Left</button>
+              <button onClick={() => handleButtonMove('right')} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Right →</button>
+            </div>
+          </div>
+          <div style={{ color: '#E8C89F', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya 🫖 <br />Fill your glass. Chai Champion vibes.</div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<TeaGame />);
+  </script>
+</body>
+</html>
