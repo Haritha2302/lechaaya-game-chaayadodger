@@ -19,17 +19,18 @@
 
     function TeaGame() {
       const [gameState, setGameState] = useState('start');
-      const [score, setScore] = useState(0);
-      const [glassFullness, setGlassFullness] = useState(0);
+      const [drinksCollected, setDrinksCollected] = useState(0);
+      const [lives, setLives] = useState(5);
       const gameRef = useRef(null);
       const gameDataRef = useRef({
         playerX: 150,
         objects: [],
-        score: 0,
-        glassFullness: 0,
+        drinksCollected: 0,
+        lives: 5,
         gameSpeed: 2,
         spawnRate: 0.015,
         objectIdCounter: 0,
+        dropsCount: 0,
       });
 
       const GAME_WIDTH = 300;
@@ -58,14 +59,20 @@
         const gameLoop = () => {
           const data = gameDataRef.current;
           if (Math.random() < data.spawnRate) {
-            const isCollectible = Math.random() > 0.4;
+            data.dropsCount += 1;
+            let type;
+            if (data.dropsCount % 100 === 0) {
+              type = 'life';
+            } else {
+              type = Math.random() > 0.4 ? 'drink' : 'snack';
+            }
             data.objects.push({
               id: data.objectIdCounter++,
               x: Math.random() * (GAME_WIDTH - 25),
               y: -25,
               width: 25,
               height: 25,
-              isCollectible,
+              type,
             });
           }
           data.objects = data.objects.filter((obj) => {
@@ -75,21 +82,20 @@
           data.objects = data.objects.filter((obj) => {
             const colliding = obj.x < data.playerX + PLAYER_SIZE && obj.x + obj.width > data.playerX && obj.y < PLAYER_Y + PLAYER_SIZE && obj.y + obj.height > PLAYER_Y;
             if (colliding) {
-              if (obj.isCollectible) {
-                data.score += 1;
-                data.glassFullness = Math.min(10, data.glassFullness + 1);
-              } else {
-                data.glassFullness = Math.max(0, data.glassFullness - 1);
+              if (obj.type === 'drink') {
+                data.drinksCollected += 1;
+              } else if (obj.type === 'snack') {
+                data.lives -= 1;
+              } else if (obj.type === 'life') {
+                data.lives = Math.min(10, data.lives + 1);
               }
-              if (data.score % 5 === 0) {
+              
+              if (data.drinksCollected % 5 === 0) {
                 data.gameSpeed += 0.3;
                 data.spawnRate = Math.min(0.035, data.spawnRate + 0.002);
               }
-              if (data.glassFullness >= 10) {
-                setGameState('win');
-                return false;
-              }
-              if (data.glassFullness <= -3) {
+              
+              if (data.lives <= 0) {
                 setGameState('gameOver');
                 return false;
               }
@@ -97,8 +103,8 @@
             }
             return true;
           });
-          setScore(data.score);
-          setGlassFullness(data.glassFullness);
+          setDrinksCollected(data.drinksCollected);
+          setLives(data.lives);
           setFrameTrigger(prev => prev + 1);
           animationId = requestAnimationFrame(gameLoop);
         };
@@ -107,9 +113,9 @@
       }, [gameState]);
 
       const handleStart = () => {
-        gameDataRef.current = { playerX: 130, objects: [], score: 0, glassFullness: 0, gameSpeed: 2, spawnRate: 0.015, objectIdCounter: 0 };
-        setScore(0);
-        setGlassFullness(0);
+        gameDataRef.current = { playerX: 130, objects: [], drinksCollected: 0, lives: 5, gameSpeed: 2, spawnRate: 0.015, objectIdCounter: 0, dropsCount: 0 };
+        setDrinksCollected(0);
+        setLives(5);
         setGameState('playing');
       };
 
@@ -130,10 +136,12 @@
             <p style={{ margin: '0', opacity: 0.8 }}>Collect drinks 🫖 • Avoid snacks 🍪</p>
           </div>
           <div style={{ width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, background: '#0F2E28', border: '3px solid #D4A574', position: 'relative', overflow: 'hidden', marginBottom: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.5)' }}>
-            <div style={{ position: 'absolute', right: '8px', top: '10px', width: '20px', height: '150px', background: '#2A5E52', border: '2px solid #D4A574', zIndex: 10 }}>
-              <div style={{ position: 'absolute', bottom: '0', width: '100%', height: `${(glassFullness / 10) * 150}px`, background: '#E8C89F', transition: 'height 0.1s' }} />
+            <div style={{ position: 'absolute', right: '8px', top: '10px', display: 'flex', gap: '4px', zIndex: 10 }}>
+              {[...Array(lives)].map((_, i) => (
+                <div key={i} style={{ width: '16px', height: '16px', fontSize: '14px' }}>❤️</div>
+              ))}
             </div>
-            <div style={{ position: 'absolute', top: '10px', left: '10px', color: '#E8C89F', fontSize: '14px', fontWeight: 'bold', zIndex: 10 }}>Drinks: {score}</div>
+            <div style={{ position: 'absolute', top: '10px', left: '10px', color: '#E8C89F', fontSize: '14px', fontWeight: 'bold', zIndex: 10 }}>Chaaya: {drinksCollected}</div>
             <div style={{ position: 'absolute', left: `${gameDataRef.current.playerX}px`, top: `${PLAYER_Y}px`, width: `${PLAYER_SIZE}px`, height: `${PLAYER_SIZE}px`, zIndex: 100 }}>
               <svg viewBox="0 0 40 40" style={{ width: '100%', height: '100%' }}>
                 <path d="M 10 5 L 12 35 Q 12 38 15 38 L 25 38 Q 28 38 28 35 L 30 5 Z" stroke="#E8C89F" strokeWidth="2" fill="none" />
@@ -141,25 +149,27 @@
               </svg>
             </div>
             {gameDataRef.current.objects.map((obj) => (
-              <div key={obj.id} style={{ position: 'absolute', left: `${obj.x}px`, top: `${obj.y}px`, width: `${obj.width}px`, height: `${obj.height}px` }}>
-                {obj.isCollectible ? (
+              <div key={obj.id} style={{ position: 'absolute', left: `${obj.x}px`, top: `${obj.y}px`, width: `${obj.width}px`, height: `${obj.height}px`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {obj.type === 'drink' && (
                   <svg viewBox="0 0 25 25" style={{ width: '100%', height: '100%' }}>
-                    <circle cx="12.5" cy="12.5" r="10" fill="#E8C89F" />
-                    <path d="M 8 7 L 10 15 Q 10 17 12.5 17 Q 15 17 15 15 L 17 7 Z" stroke="#1B4D3E" strokeWidth="1.5" fill="none" />
+                    <rect x="6" y="4" width="13" height="16" rx="2" stroke="#E8C89F" strokeWidth="1.5" fill="none" />
+                    <line x1="7" y1="6" x2="18" y2="6" stroke="#E8C89F" strokeWidth="1" />
+                    <path d="M 10 2 Q 10 1 12.5 1 Q 15 1 15 2" stroke="#D4A574" strokeWidth="1.5" fill="none" />
                   </svg>
-                ) : (
-                  <div style={{ background: '#8B6F47', width: '100%', height: '100%', border: '2px solid #6B5136', position: 'relative' }}>
-                    <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#D4A574', top: '4px', left: '4px' }} />
-                    <div style={{ position: 'absolute', width: '6px', height: '6px', background: '#C0956F', top: '6px', right: '6px' }} />
-                  </div>
+                )}
+                {obj.type === 'snack' && (
+                  <div style={{ fontSize: '18px' }}>🍌</div>
+                )}
+                {obj.type === 'life' && (
+                  <div style={{ fontSize: '18px' }}>❤️</div>
                 )}
               </div>
             ))}
             {gameState === 'gameOver' && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: '#E8C89F', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>Glass Empty!</div>
-                <div style={{ fontSize: '14px', marginBottom: '15px' }}>You collected {score} drinks</div>
-                <button onClick={handleStart} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Try Again</button>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>Out of Lives!</div>
+                <div style={{ fontSize: '18px', marginBottom: '15px' }}>You collected <span style={{ color: '#D4A574', fontWeight: 'bold' }}>{drinksCollected}</span> chaaya 🫖</div>
+                <button onClick={handleStart} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Play Again</button>
               </div>
             )}
             {gameState === 'win' && (
