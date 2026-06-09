@@ -37,6 +37,8 @@
       const PLAYER_SIZE = 40;
       const PLAYER_Y = GAME_HEIGHT - 50;
 
+      const [frameTriggger, setFrameTrigger] = useState(0);
+
       useEffect(() => {
         const handleKeyDown = (e) => {
           if (gameState !== 'playing') return;
@@ -97,6 +99,7 @@
           });
           setScore(data.score);
           setGlassFullness(data.glassFullness);
+          setFrameTrigger(prev => prev + 1);
           animationId = requestAnimationFrame(gameLoop);
         };
         animationId = requestAnimationFrame(gameLoop);
