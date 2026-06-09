@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Le Chaaya - Fill Your Glass</title>
+  <title>Chaaya Dodger - Le Chaaya</title>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -17,7 +17,7 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    export default function TeaGame() {
+    function TeaGame() {
       const [gameState, setGameState] = useState('start');
       const [score, setScore] = useState(0);
       const [glassFullness, setGlassFullness] = useState(0);
@@ -123,7 +123,7 @@
       return (
         <div style={{ background: '#1B4D3E', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
           <div style={{ color: '#E8C89F', marginBottom: '20px', textAlign: 'center' }}>
-            <h1 style={{ margin: '0 0 10px 0' }}>Fill Your Tea Glass</h1>
+            <h1 style={{ margin: '0 0 10px 0' }}>Fill Your Chaaya Glass</h1>
             <p style={{ margin: '0', opacity: 0.8 }}>Collect drinks 🫖 • Avoid snacks 🍪</p>
           </div>
           <div style={{ width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, background: '#0F2E28', border: '3px solid #D4A574', position: 'relative', overflow: 'hidden', marginBottom: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.5)' }}>
@@ -169,7 +169,7 @@
             )}
             {gameState === 'start' && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 200, color: '#E8C89F', textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>Fill Your Tea Glass</div>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>Chaaya Dodger</div>
                 <div style={{ fontSize: '12px', marginBottom: '20px', opacity: 0.8, lineHeight: '1.6' }}>Collect drinks 🫖<br />Avoid snacks 🍪<br />Fill the glass to win!</div>
                 <button onClick={handleStart} style={{ padding: '12px 24px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Start Game</button>
               </div>
@@ -182,7 +182,7 @@
               <button onClick={() => handleButtonMove('right')} style={{ padding: '10px 20px', background: '#D4A574', color: '#1B4D3E', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px' }}>Right →</button>
             </div>
           </div>
-          <div style={{ color: '#E8C89F', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya 🫖 <br />Fill your glass. Chai Champion vibes.</div>
+          <div style={{ color: '#E8C89F', fontSize: '12px', opacity: 0.7, textAlign: 'center', maxWidth: '300px' }}>Made for Le Chaaya 🫖 <br />Fill your glass. Chaaya Champion vibes.</div>
         </div>
       );
     }
